@@ -7,7 +7,7 @@ MicroArgomenti: Adapter, Builder, Esempio Factory Method
 
 # Esempio Factory Method
 
-![Screenshot 2025-03-30 alle 09.54.54.png](8%C2%B0%20lezione%20IDS%201c9c5c8ba93981209521f55de3effbd9/Screenshot_2025-03-30_alle_09.54.54.png)
+![Screenshot 2025-03-30 alle 09.54.54.png](images/Screenshot_2025-03-30_alle_09.54.54.png)
 
 ```java
 // Codice Java che implementa il design pattern Factory Method
@@ -249,7 +249,7 @@ Richiedere l’oggetto desiderato indirettamente, attraverso il design pattern B
 
 ## Design Pattern Builder
 
-![image.png](8%C2%B0%20lezione%20IDS%201c9c5c8ba93981209521f55de3effbd9/image.png)
+![image.png](images/image.png)
 
 Si vuole separare la costruzione di un oggetto complesso dalla sua rappresentazione così che lo stesso processo costruttivo può creare diverse rappresentazioni
 
@@ -264,7 +264,7 @@ Il *Pattern Builder* si utilizza quando l’algoritmo per la creazione di un o
 - Il *Director* (ad esempio, *InitBiglietto*) coordina il processo di costruzione utilizzando l’interfaccia *Builder*, garantendo che l’oggetto venga creato seguendo una sequenza predefinita di passaggi.
 - *Product* (ad esempio, *Biglietto*) rappresenta l’oggetto complesso da costruire, definendone le parti costituenti e fornendo le istruzioni per il loro assemblaggio.
 
-![image.png](8%C2%B0%20lezione%20IDS%201c9c5c8ba93981209521f55de3effbd9/image%201.png)
+![image.png](images/image%201.png)
 
 ```java
 // Product
@@ -386,9 +386,11 @@ Allo stesso modo, non è possibile intervenire direttamente sull’applicazione,
 
 ## Design pattern Adapter: Soluzione
 
-![image.png](8%C2%B0%20lezione%20IDS%201c9c5c8ba93981209521f55de3effbd9/image%202.png)
+![image.png](images/image%202.png)
 
-![image.png](8%C2%B0%20lezione%20IDS%201c9c5c8ba93981209521f55de3effbd9/image%203.png)
+![image.png](images
+
+/image%203.png)
 
 - **Target** è l’interfaccia che il chiamante si aspetta
 - **Adaptee** è l’oggetto di libreria
@@ -399,7 +401,7 @@ Allo stesso modo, non è possibile intervenire direttamente sull’applicazione,
 
 ### Esempio
 
-![image.png](8%C2%B0%20lezione%20IDS%201c9c5c8ba93981209521f55de3effbd9/image%204.png)
+![image.png](images/image%204.png)
 
 ```java
 public interface ILabel { // Target
@@ -456,9 +458,9 @@ public String getNextLabel() {
 
 ## Design pattern Adapter versione class Adapter
 
-![image.png](8%C2%B0%20lezione%20IDS%201c9c5c8ba93981209521f55de3effbd9/image%205.png)
+![image.png](images/image%205.png)
 
-![image.png](8%C2%B0%20lezione%20IDS%201c9c5c8ba93981209521f55de3effbd9/image%206.png)
+![image.png](images/image%206.png)
 
 La classe **Adapter** fornisce l’interfaccia di **Target** e quella di **Adaptee**, consentendo l’interazione tra componenti con interfacce incompatibili. La sua realizzazione può avvenire secondo due strategie principali: il *Class Adapter*, che sfrutta l’ereditarietà per estendere il comportamento dell’**Adaptee**, e l’*Object Adapter*, che utilizza la composizione per delegare le chiamate all’**Adaptee**. Nel caso del *Class Adapter*, si parla di una soluzione a due vie, in cui l’**Adapter** agisce come un ponte bidirezionale tra le due interfacce.
 
