@@ -1,0 +1,29 @@
+@startuml
+interface Shape {
+    +clone(): Shape
+    +draw(): void
+}
+
+class Circle {
+    -radius: int
+    +Circle(radius: flot)
+    +clone(): Shape
+    +draw(): void
+}
+
+class Rectangle {
+    -width: float
+    -height: float
+    +Rectangle(width: float, height: float)
+    +clone(): Shape
+    +draw(): void
+}
+
+class Main {
+    +main(args: String[]): void
+}
+
+Shape <|.. Circle
+Shape <|.. Rectangle
+Main --> Shape : usa
+@enduml
