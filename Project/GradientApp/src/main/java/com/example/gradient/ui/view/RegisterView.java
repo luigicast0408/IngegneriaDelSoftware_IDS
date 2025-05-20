@@ -8,6 +8,8 @@ import javafx.scene.layout.VBox;
 
 public class RegisterView {
     private final VBox root;
+    private final TextField nameField = new TextField();
+    private final TextField surnameField = new TextField();
     private final TextField usernameField = new TextField();
     private final PasswordField passwordField = new PasswordField();
     private final PasswordField confirmPasswordField = new PasswordField();
@@ -35,10 +37,7 @@ public class RegisterView {
      */
 
     private GridPane createForm() {
-        usernameField.setPromptText("Username");
-        passwordField.setPromptText("Password");
-        confirmPasswordField.setPromptText("Confirm Password");
-        registerButton.setPrefWidth(120);
+        setPromptText();
         configureMessageLabel();
 
         GridPane grid = new GridPane();
@@ -46,18 +45,39 @@ public class RegisterView {
         grid.setHgap(10);
         grid.setAlignment(Pos.CENTER);
 
-        grid.add(new Label("Username:"), 0, 0);
-        grid.add(usernameField, 1, 0);
-        grid.add(new Label("Password:"), 0, 1);
-        grid.add(passwordField, 1, 1);
-        grid.add(new Label("Confirm Password:"), 0, 2);
-        grid.add(confirmPasswordField, 1, 2);
-        grid.add(registerButton, 1, 3);
-        grid.add(messageLabel, 0, 4, 2, 1);
-
+        addComponentsToGrid(grid);
         return grid;
     }
 
+    private void addComponentsToGrid(GridPane grid){
+        grid.add(new Label("Name:"), 0, 0);
+        grid.add(nameField, 1, 0);
+
+        grid.add(new Label("Surname:"), 0, 1);
+        grid.add(surnameField, 1, 1);
+
+        grid.add(new Label("Username:"), 0, 2);
+        grid.add(usernameField, 1, 2);
+
+        grid.add(new Label("Password:"), 0, 3);
+        grid.add(passwordField, 1, 3);
+
+        grid.add(new Label("Confirm Password:"), 0, 4);
+        grid.add(confirmPasswordField, 1, 4);
+
+        grid.add(registerButton, 1, 5);
+        grid.add(messageLabel, 0, 6, 2, 1); // spanning two columns
+    }
+
+
+    private void setPromptText(){
+        nameField.setPromptText("Name");
+        surnameField.setPromptText("Surname");
+        usernameField.setPromptText("Username");
+        passwordField.setPromptText("Password");
+        confirmPasswordField.setPromptText("Confirm Password");
+        registerButton.setPrefWidth(120);
+    }
     private void configureMessageLabel() {
         messageLabel.setStyle("-fx-text-fill: red;");
         messageLabel.setVisible(false);
@@ -67,6 +87,8 @@ public class RegisterView {
     }
 
     public VBox getRoot() { return root; }
+    public TextField getNameField(){return nameField;}
+    public TextField getSurnameField(){return surnameField;}
     public TextField getUsernameField() { return usernameField; }
     public PasswordField getPasswordField() { return passwordField; }
     public PasswordField getConfirmPasswordField() { return confirmPasswordField; }
@@ -80,6 +102,8 @@ public class RegisterView {
     }
 
     public void clearFields() {
+        nameField.clear();
+        surnameField.clear();
         usernameField.clear();
         passwordField.clear();
         confirmPasswordField.clear();
