@@ -1,5 +1,6 @@
 package com.example.gradient.ui.view;
 
+import com.example.gradient.ui.controller.LoginController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -22,6 +23,7 @@ public class LoginView {
         GridPane gridPane = buildGridLayout();
         addComponentsToGrid(gridPane);
         root.getChildren().add(gridPane);
+        new LoginController(this);
     }
 
     /**

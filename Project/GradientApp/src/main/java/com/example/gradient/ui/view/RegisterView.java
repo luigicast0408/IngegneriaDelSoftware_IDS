@@ -1,5 +1,6 @@
 package com.example.gradient.ui.view;
 
+import com.example.gradient.ui.controller.RegistrationController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -10,6 +11,7 @@ public class RegisterView {
     private final VBox root;
     private final TextField nameField = new TextField();
     private final TextField surnameField = new TextField();
+    private final TextField emailField = new TextField();
     private final TextField usernameField = new TextField();
     private final PasswordField passwordField = new PasswordField();
     private final PasswordField confirmPasswordField = new PasswordField();
@@ -20,6 +22,9 @@ public class RegisterView {
         root = createRootLayout();
         GridPane form = createForm();
         root.getChildren().add(form);
+
+       new RegistrationController(this);
+
     }
 
     private VBox createRootLayout() {
@@ -56,17 +61,20 @@ public class RegisterView {
         grid.add(new Label("Surname:"), 0, 1);
         grid.add(surnameField, 1, 1);
 
-        grid.add(new Label("Username:"), 0, 2);
-        grid.add(usernameField, 1, 2);
+        grid.add(new Label("Email:"), 0, 2);
+        grid.add(emailField, 1, 2);
 
-        grid.add(new Label("Password:"), 0, 3);
-        grid.add(passwordField, 1, 3);
+        grid.add(new Label("Username:"), 0, 3);
+        grid.add(usernameField, 1, 3);
 
-        grid.add(new Label("Confirm Password:"), 0, 4);
-        grid.add(confirmPasswordField, 1, 4);
+        grid.add(new Label("Password:"), 0, 4);
+        grid.add(passwordField, 1, 4);  // FIX: Correct row
 
-        grid.add(registerButton, 1, 5);
-        grid.add(messageLabel, 0, 6, 2, 1); // spanning two columns
+        grid.add(new Label("Confirm Password:"), 0, 5);
+        grid.add(confirmPasswordField, 1, 5);  // FIX: Correct row
+
+        grid.add(registerButton, 1, 6);
+        grid.add(messageLabel, 0, 7, 2, 1); // spanning two columns
     }
 
 
@@ -89,6 +97,9 @@ public class RegisterView {
     public VBox getRoot() { return root; }
     public TextField getNameField(){return nameField;}
     public TextField getSurnameField(){return surnameField;}
+    public TextField getEmailField() {
+        return emailField;
+    }
     public TextField getUsernameField() { return usernameField; }
     public PasswordField getPasswordField() { return passwordField; }
     public PasswordField getConfirmPasswordField() { return confirmPasswordField; }
