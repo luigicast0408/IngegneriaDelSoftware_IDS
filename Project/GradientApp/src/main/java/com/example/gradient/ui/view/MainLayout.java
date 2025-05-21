@@ -1,13 +1,21 @@
 package com.example.gradient.ui.view;
 
+import com.example.gradient.core.SceneManager;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+/**
+ * The MainLayout class defines the main user interface layout for the application.
+ * It manages navigation between different views using a central dynamic container.
+ */
 public class MainLayout extends BorderPane {
     private final Stage stage;
+    private final StackPane contentPane = new StackPane();
+
     private final LoadImageView loadImageView;
     private final LoginView loginView;
     private final RegisterView registerView;
@@ -28,16 +36,16 @@ public class MainLayout extends BorderPane {
         this.registerView = new RegisterView();
         this.adminPanelView = new AdminDashboardView();
 
+        SceneManager.setMainContainer(contentPane);
+        SceneManager.switchTo(loginView.getRoot());
+
         ToolBar toolBar = createToolBar();
         setTop(toolBar);
-        setCenter(loadImageView.getRoot());
+        setCenter(contentPane);
 
         configureButtonActions();
     }
 
-    /*
-     * This method is the entry point of the application.
-     */
     public static void startApp(Stage stage) {
         MainLayout mainLayout = new MainLayout(stage);
         Scene scene = new Scene(mainLayout, 820, 720);
@@ -46,26 +54,29 @@ public class MainLayout extends BorderPane {
         stage.show();
     }
 
+    /**
+     * Creates and returns the top navigation toolbar.
+     *
+     * @return the constructed ToolBar with navigation buttons
+     */
     private ToolBar createToolBar() {
         ToolBar toolBar = new ToolBar();
         toolBar.getItems().addAll(loadBtn, loginBtn, registerBtn, adminBtn, logoutBtn, exitBtn);
         return toolBar;
     }
 
-    /*
-    This method sets on action events for the buttons in the toolbar.
-    */
+    /**
+     * Configures the button actions to switch between views using the SceneManager.
+     */
     private void configureButtonActions() {
-        loadBtn.setOnAction(e -> setCenter(loadImageView.getRoot()));
-        loginBtn.setOnAction(e -> setCenter(loginView.getRoot()));
-        registerBtn.setOnAction(e -> setCenter(registerView.getRoot()));
-        adminBtn.setOnAction(e -> setCenter(adminPanelView.getRoot()));
-
+        loadBtn.setOnAction(e -> SceneManager.switchTo(loadImageView.getRoot()));
+        loginBtn.setOnAction(e -> SceneManager.switchTo(loginView.getRoot()));
+        registerBtn.setOnAction(e -> SceneManager.switchTo(registerView.getRoot()));
+        adminBtn.setOnAction(e -> SceneManager.switchTo(adminPanelView.getRoot()));
         logoutBtn.setOnAction(e -> {
-            setCenter(loginView.getRoot());
             loginView.clearFields();
+            SceneManager.switchTo(loginView.getRoot());
         });
-
         exitBtn.setOnAction(e -> stage.close());
     }
 }
