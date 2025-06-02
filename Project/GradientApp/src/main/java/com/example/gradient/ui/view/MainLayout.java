@@ -1,6 +1,8 @@
 package com.example.gradient.ui.view;
 
 import com.example.gradient.core.SceneManager;
+import com.example.gradient.ui.controller.AdminDashboardController;
+import com.example.gradient.ui.controller.LoadImagesController;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
@@ -17,6 +19,10 @@ public class MainLayout extends BorderPane {
     private final StackPane contentPane = new StackPane();
 
     private final LoadImageView loadImageView;
+    private final LoadImagesController loadImagesController;
+
+    private final AdminDashboardController adminDashboardController;
+
     private final LoginView loginView;
     private final RegisterView registerView;
     private final AdminDashboardView adminPanelView;
@@ -35,6 +41,8 @@ public class MainLayout extends BorderPane {
         this.loginView = new LoginView();
         this.registerView = new RegisterView();
         this.adminPanelView = new AdminDashboardView();
+        this.loadImagesController = new LoadImagesController(loadImageView);
+        this.adminDashboardController = new AdminDashboardController(adminPanelView);
 
         SceneManager.setMainContainer(contentPane);
         SceneManager.switchTo(loginView.getRoot());
@@ -69,7 +77,9 @@ public class MainLayout extends BorderPane {
      * Configures the button actions to switch between views using the SceneManager.
      */
     private void configureButtonActions() {
-        loadBtn.setOnAction(e -> SceneManager.switchTo(loadImageView.getRoot()));
+        loadBtn.setOnAction(e -> {
+            SceneManager.switchTo(loadImageView.getRoot());
+        });
         loginBtn.setOnAction(e -> SceneManager.switchTo(loginView.getRoot()));
         registerBtn.setOnAction(e -> SceneManager.switchTo(registerView.getRoot()));
         adminBtn.setOnAction(e -> SceneManager.switchTo(adminPanelView.getRoot()));
