@@ -1,12 +1,14 @@
 package com.example.gradient.ui.view;
 
 import com.example.gradient.database.ImageEntity;
+import com.example.gradient.database.User;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 
@@ -21,8 +23,8 @@ public class AdminDashboardView {
     private final TableView<ImageEntity> imageTable = new TableView<>();
     private final ObservableList<ImageEntity> imageList = FXCollections.observableArrayList();
 
-    private final TableView<String> userTable = new TableView<>();
-    private final ObservableList<String> userList = FXCollections.observableArrayList();
+    private final TableView<User> userTable = new TableView<>();
+    private final ObservableList<User> userList = FXCollections.observableArrayList();
 
     private final ImageView originalImageView = new ImageView();
     private final ImageView processedImageView = new ImageView();
@@ -36,59 +38,50 @@ public class AdminDashboardView {
         VBox formBox = createFormBox();
         VBox userBox = createUserTableBox();
         VBox imageBox = createImageTableBox();
-        VBox saveImageBox = createImageDisplayBox();
-
-        root.getChildren().addAll(formBox, userBox, imageBox, saveImageBox);
+        root.getChildren().addAll(formBox, userBox, imageBox);
     }
 
-    /**
-     * Creates the form layout for saving images to the database.
-     *
-     * @return VBox representing the form layout.
-     */
     private VBox createFormBox() {
         Label formLabel = new Label("Save Image to Database");
-
-        nameField.setPromptText("Image Name");
-        pathField.setPromptText("Image Path");
+        Button chooseFileButton = new Button("Choose Image");
         descriptionField.setPromptText("Description");
 
-        GridPane form = new GridPane();
-        form.setHgap(10);
-        form.setVgap(10);
-        form.setAlignment(Pos.CENTER);
-        form.add(new Label("Name:"), 0, 0);
-        form.add(nameField, 1, 0);
-        form.add(new Label("Path:"), 0, 1);
-        form.add(pathField, 1, 1);
-        form.add(new Label("Description:"), 0, 2);
-        form.add(descriptionField, 1, 2);
-        form.add(addToDbButton, 1, 3);
-
-        VBox formBox = new VBox(10, formLabel, form);
+        VBox formBox = new VBox(10,
+                formLabel,
+                chooseFileButton,
+                new Label("Description:"),
+                descriptionField,
+                addToDbButton
+        );
         formBox.setStyle("-fx-border-color: lightgray; -fx-padding: 10;");
         formBox.setAlignment(Pos.CENTER);
         return formBox;
     }
 
-    private VBox createUserTableBox() {
-        Label userLabel = new Label("User List");
-        TableColumn<String, String> userCol = new TableColumn<>("Username");
-        userCol.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue()));
-        userCol.setPrefWidth(300);
+    private void setupUserTable() {
+        TableColumn<User, String> nameCol = new TableColumn<>("Name");
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        userTable.getColumns().add(userCol);
+        TableColumn<User, String> surnameCol = new TableColumn<>("Surname");
+        surnameCol.setCellValueFactory(new PropertyValueFactory<>("surname"));
+
+        TableColumn<User, String> emailCol = new TableColumn<>("Email");
+        emailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
+
+        TableColumn<User, String> roleCol = new TableColumn<>("Role");
+        roleCol.setCellValueFactory(new PropertyValueFactory<>("role"));
+
+        userTable.getColumns().setAll(nameCol, surnameCol, emailCol, roleCol);
         userTable.setItems(userList);
-        userTable.setPrefHeight(150);
+    }
 
+    private VBox createUserTableBox() {
+        Label userLabel = new Label("Users List");
+        setupUserTable();
+        userTable.setPrefHeight(150);
         return new VBox(5, userLabel, userTable);
     }
 
-    /**
-     * Creates the image table layout for displaying images.
-     *
-     * @return VBox representing the image table layout.
-     */
     private VBox createImageTableBox() {
         Label imageLabel = new Label("Image List");
 
@@ -131,18 +124,14 @@ public class AdminDashboardView {
     }
 
     public VBox getRoot() { return root; }
-
     public TextField getNameField() { return nameField; }
     public TextField getPathField() { return pathField; }
     public TextField getDescriptionField() { return descriptionField; }
     public Button getAddToDbButton() { return addToDbButton; }
-
     public TableView<ImageEntity> getImageTable() { return imageTable; }
     public ObservableList<ImageEntity> getImageList() { return imageList; }
-
-    public TableView<String> getUserTable() { return userTable; }
-    public ObservableList<String> getUserList() { return userList; }
-
+    public TableView<User> getUserTable() { return userTable; }
+    public ObservableList<User> getUserList() { return userList; }
     public ImageView getOriginalImageView() { return originalImageView; }
     public ImageView getProcessedImageView() { return processedImageView; }
     public Button getSaveImageButton() { return saveImageButton; }
