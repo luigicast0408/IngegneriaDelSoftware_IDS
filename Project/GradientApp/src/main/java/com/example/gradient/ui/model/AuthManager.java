@@ -48,7 +48,7 @@ public class AuthManager {
      */
     public boolean register(String name, String surname, String email, String username, String password, String role) {
         if (userDao.getUserByUsername(username) != null) {
-            return false; // Username già in uso
+            return false;
         }
 
         User newUser = new User();
@@ -73,14 +73,14 @@ public class AuthManager {
     public void logout() {
         currentUser = null;
     }
-
-
     public boolean isLoggedIn() {
         return currentUser != null;
     }
-
     public String getCurrentUsername() {
         return currentUser != null ? currentUser.getUsername() : null;
+    }
+    public User getCurrentUser() {
+        return currentUser;
     }
 
     public String getCurrentRole() {
