@@ -1,10 +1,15 @@
 package com.example.gradient.ui.controller;
 
 import com.example.gradient.core.SceneManager;
+import com.example.gradient.database.User;
+import com.example.gradient.database.UserRepository;
+import com.example.gradient.observer.logic.ObserverManager;
 import com.example.gradient.ui.model.AuthManager;
 import com.example.gradient.ui.view.LoginView;
 import com.example.gradient.ui.view.RegisterView;
 import javafx.scene.control.Alert;
+
+import java.util.List;
 
 public class RegistrationController {
 
@@ -52,6 +57,8 @@ public class RegistrationController {
 
         if (authManager.register(name, surname, email, username, password, "USER")) {
             showAlert("Success", "The user is registered successfully.");
+            List<User> allUsers = new UserRepository().getAllUsers();
+            ObserverManager.USERS_SUBJECT.notifyObservers(allUsers);
             SceneManager.switchTo(new LoginView().getRoot());
         } else {
             showAlert("Registration Failed", "Username is already in use.");

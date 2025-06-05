@@ -1,9 +1,15 @@
 package com.example.gradient.ui.controller;
 
+import com.example.gradient.core.UserSession;
 import com.example.gradient.database.*;
+import com.example.gradient.observer.logic.ImageListObserver;
+import com.example.gradient.observer.logic.ObserverManager;
+import com.example.gradient.observer.logic.Subject;
+import com.example.gradient.observer.logic.UserListObserver;
 import com.example.gradient.ui.view.AdminDashboardView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -13,11 +19,15 @@ public class AdminDashboardController {
     private final AdminDashboardView view;
     private final ObservableList<ImageEntity> imageList;
     private final ObservableList<User> usersList;
+    private final Subject<List<User>> usersSubject = new Subject<>();
 
     public AdminDashboardController(AdminDashboardView view) {
         this.view = view;
         this.imageList = FXCollections.observableArrayList();
         this.usersList = FXCollections.observableArrayList();
+
+        ObserverManager.USERS_SUBJECT.addObserver(new UserListObserver(usersList));
+        ObserverManager.IMAGES_SUBJECT.addObserver(new ImageListObserver(imageList));
         initialize();
     }
 
@@ -28,19 +38,58 @@ public class AdminDashboardController {
         loadImagesFromDB();
         setupAddImageAction();
         setupChooseImageAction();
-        setupSaveProcessedImageAction();
     }
 
+    /**
+     * Executes a query to the database to retrieve all users and updates the {@code usersList}.
+     * <p>
+     * Uses the Observer design pattern to update the list when a user is registered.
+     * This operation is performed in a separate thread using a {@code Task}
+     * to prevent blocking the JavaFX Application Thread and keep the GUI responsive.
+     * </p>
+     */
+
     private void loadUsersFromDB() {
-        UserDao userDAO = new UserRepository();
-        List<User> allUsers = userDAO.getAllUsers();
-        usersList.setAll(allUsers);
+        Task<List<User>> task = new Task<>() {
+            @Override
+            protected List<User> call() {
+                UserDao userDAO = new UserRepository();
+                return userDAO.getAllUsers();
+            }
+
+            @Override
+            protected void succeeded() {
+                ObserverManager.USERS_SUBJECT.notifyObservers(getValue());
+            }
+
+            @Override
+            protected void failed() {
+                System.err.println("Error in users load: " + getException());
+            }
+        };
+
+        new Thread(task).start();
     }
 
     private void loadImagesFromDB() {
-        ImageDAO imageDAO = new ImageRepository();
-        List<ImageEntity> allImages = imageDAO.getAllImages();
-        imageList.setAll(allImages);
+        Task<List<ImageEntity>> task = new Task<>() {
+
+            @Override
+            protected List<ImageEntity> call() throws Exception {
+                ImageDAO imageDAO = new ImageRepository();
+                return imageDAO.getAllImages();
+            }
+
+            protected void succeeded() {
+                ObserverManager.IMAGES_SUBJECT.notifyObservers(getValue());
+            }
+
+            @Override
+            protected void failed() {
+                System.err.println("Error in images load: " + getException());
+            }
+        };
+        new Thread(task).start();
     }
 
     private void setupAddImageAction() {
@@ -96,22 +145,52 @@ public class AdminDashboardController {
         view.getRoot().lookupAll(".button").forEach(node -> {
             if (node instanceof javafx.scene.control.Button btn && btn.getText().equals("Choose Image")) {
                 btn.setOnAction(e -> {
-                    FileChooser fileChooser = new FileChooser();
-                    fileChooser.setTitle("Select Image");
-                    File selectedFile = fileChooser.showOpenDialog(view.getRoot().getScene().getWindow());
+                    File selectedFile = chooseImageFile();
                     if (selectedFile != null) {
-                        view.getNameField().setText(selectedFile.getName());
-                        view.getPathField().setText(selectedFile.getAbsolutePath());
+                        try {
+                            File copiedFile = copyImageToLocalFolder(selectedFile);
+                            handleSelectedImage(copiedFile);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
                     }
                 });
             }
         });
     }
 
-    private void setupSaveProcessedImageAction() {
-        view.getSaveImageButton().setOnAction(e -> {
-            System.out.println("Save Processed Image clicked");
-            //TODO implement this method
-        });
+    private File chooseImageFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Image");
+        return fileChooser.showOpenDialog(view.getRoot().getScene().getWindow());
+    }
+
+    private File copyImageToLocalFolder(File selectedFile) throws Exception {
+        File imagesDir = new File(System.getProperty("user.dir"), "images");
+        if (!imagesDir.exists()) {
+            boolean created = imagesDir.mkdirs();
+        }
+
+        File destFile = new File(imagesDir, selectedFile.getName());
+        java.nio.file.Files.copy(selectedFile.toPath(), destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        return destFile;
+    }
+
+    private void handleSelectedImage(File copiedFile) {
+        String fileName = copiedFile.getName();
+        String relativePath = "images/" + fileName;
+
+        view.getNameField().setText(fileName);
+        view.getPathField().setText(relativePath);
+
+        ImageEntity image = new ImageEntity();
+        image.setName(fileName);
+        image.setPath(relativePath);
+        image.setDescription(view.getDescriptionField().getText());
+        image.setId_user(UserSession.getCurrentUser().getId());
+
+        ImageDAO imageDAO = new ImageRepository();
+        imageDAO.insertImage(image);
+        imageList.add(image);
     }
 }
