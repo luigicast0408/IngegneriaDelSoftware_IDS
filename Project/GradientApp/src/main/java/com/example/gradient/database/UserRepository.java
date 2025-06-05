@@ -134,6 +134,7 @@ public class UserRepository implements UserDao {
 
     private User mapResultSetToUser(ResultSet rs) throws SQLException {
         User user = new User();
+        user.setId(rs.getInt("id"));       // <-- aggiungi questa riga
         user.setName(rs.getString("name"));
         user.setSurname(rs.getString("surname"));
         user.setEmail(rs.getString("email"));

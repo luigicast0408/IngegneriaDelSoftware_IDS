@@ -31,14 +31,14 @@ public class ImageRepository implements ImageDAO {
 
     @Override
     public void updateImage(ImageEntity imageEntity) {
-        String sql = "UPDATE Images SET name = ?, path = ?, description = ? WHERE id_users = ?";
+        String sql = "UPDATE Images SET name = ?, path = ?, description = ? WHERE id";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, imageEntity.getName());
             stmt.setString(2, imageEntity.getPath());
             stmt.setString(3, imageEntity.getDescription());
-            stmt.setInt(4, imageEntity.getId_user());
+            stmt.setInt(4, imageEntity.getId());
             stmt.executeUpdate();
 
         } catch (SQLException e) {
