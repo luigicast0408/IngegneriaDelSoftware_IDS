@@ -1,5 +1,7 @@
 package com.example.gradient.ui.controller;
 
+import com.example.gradient.core.UserSession;
+import com.example.gradient.database.User;
 import com.example.gradient.ui.model.AuthManager;
 import com.example.gradient.ui.view.LoginView;
 import com.sun.scenario.effect.impl.prism.PrRenderInfo;
@@ -33,7 +35,9 @@ public class LoginController {
         }
 
         if (authManager.login(username, password)) {
-            showAlert("Success", "Login success" + authManager.getCurrentUsername());
+            User user = authManager.getCurrentUser();
+            UserSession.setCurrentUser(user);
+            showAlert("Success", "Login success: " + user.getUsername());
         } else {
             showAlert("Error", "Invalid username or password");
         }
