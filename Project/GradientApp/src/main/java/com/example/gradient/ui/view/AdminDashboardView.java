@@ -24,7 +24,6 @@ public class AdminDashboardView {
     private final ObservableList<ImageEntity> imageList = FXCollections.observableArrayList();
 
     private final TableView<User> userTable = new TableView<>();
-    private final ObservableList<User> userList = FXCollections.observableArrayList();
 
     private final ImageView originalImageView = new ImageView();
     private final ImageView processedImageView = new ImageView();
@@ -58,6 +57,14 @@ public class AdminDashboardView {
         return formBox;
     }
 
+
+    private VBox createUserTableBox() {
+        Label userLabel = new Label("Users List");
+        setupUserTable();
+        userTable.setPrefHeight(150);
+        return new VBox(5, userLabel, userTable);
+    }
+
     private void setupUserTable() {
         TableColumn<User, String> nameCol = new TableColumn<>("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -72,15 +79,8 @@ public class AdminDashboardView {
         roleCol.setCellValueFactory(new PropertyValueFactory<>("role"));
 
         userTable.getColumns().setAll(nameCol, surnameCol, emailCol, roleCol);
-        userTable.setItems(userList);
     }
 
-    private VBox createUserTableBox() {
-        Label userLabel = new Label("Users List");
-        setupUserTable();
-        userTable.setPrefHeight(150);
-        return new VBox(5, userLabel, userTable);
-    }
 
     private VBox createImageTableBox() {
         Label imageLabel = new Label("Image List");
@@ -131,7 +131,6 @@ public class AdminDashboardView {
     public TableView<ImageEntity> getImageTable() { return imageTable; }
     public ObservableList<ImageEntity> getImageList() { return imageList; }
     public TableView<User> getUserTable() { return userTable; }
-    public ObservableList<User> getUserList() { return userList; }
     public ImageView getOriginalImageView() { return originalImageView; }
     public ImageView getProcessedImageView() { return processedImageView; }
     public Button getSaveImageButton() { return saveImageButton; }
