@@ -1,4 +1,4 @@
-package com.example.gradient.observer.logic;
+package com.example.gradient.observer;
 
 import com.example.gradient.database.ImageEntity;
 import javafx.application.Platform;

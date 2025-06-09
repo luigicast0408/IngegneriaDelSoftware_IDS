@@ -1,5 +1,5 @@
 package com.example.gradient.observer;
 
-public interface Observer {
-    void update(double value);
+public interface Observer<T> {
+    void update(T value);
 }
