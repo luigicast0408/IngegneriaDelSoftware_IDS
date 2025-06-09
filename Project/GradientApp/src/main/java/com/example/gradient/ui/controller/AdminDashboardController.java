@@ -2,10 +2,10 @@ package com.example.gradient.ui.controller;
 
 import com.example.gradient.core.UserSession;
 import com.example.gradient.database.*;
-import com.example.gradient.observer.logic.ImageListObserver;
-import com.example.gradient.observer.logic.ObserverManager;
-import com.example.gradient.observer.logic.Subject;
-import com.example.gradient.observer.logic.UserListObserver;
+import com.example.gradient.observer.ImageListObserver;
+import com.example.gradient.observer.ObserverManager;
+import com.example.gradient.observer.Subject;
+import com.example.gradient.observer.UserListObserver;
 import com.example.gradient.ui.view.AdminDashboardView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

@@ -3,7 +3,7 @@ package com.example.gradient.ui.controller;
 import com.example.gradient.core.SceneManager;
 import com.example.gradient.database.User;
 import com.example.gradient.database.UserRepository;
-import com.example.gradient.observer.logic.ObserverManager;
+import com.example.gradient.observer.ObserverManager;
 import com.example.gradient.ui.model.AuthManager;
 import com.example.gradient.ui.view.LoginView;
 import com.example.gradient.ui.view.RegisterView;
