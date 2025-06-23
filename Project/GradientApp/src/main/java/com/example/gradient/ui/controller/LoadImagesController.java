@@ -2,9 +2,7 @@ package com.example.gradient.ui.controller;
 
 import com.example.gradient.core.ImageProcessor;
 import com.example.gradient.core.ThreadTask;
-import com.example.gradient.database.ImageDAO;
-import com.example.gradient.database.ImageEntity;
-import com.example.gradient.database.ImageRepository;
+import com.example.gradient.database.*;
 import com.example.gradient.ui.view.LoadImageView;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -12,67 +10,52 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 
-import java.io.InputStream;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class LoadImagesController {
     private final LoadImageView view;
-    private final ObservableList<ImageEntity> imageList;
+    private final ObservableList<ImageEntity> imageList = FXCollections.observableArrayList();
     private ImageProcessor imageProcessor;
     private Image originalImage;
 
     public LoadImagesController(LoadImageView view) {
         this.view = view;
-        this.imageList = FXCollections.observableArrayList();
-        this.view.getImageTableView().setItems(this.imageList);
+        this.view.getImageTableView().setItems(imageList);
         setupListeners();
         loadImages();
     }
 
     private void loadImages() {
-        ArrayList<ImageEntity> imageDB = fetchImagesFromDatabase();
-        imageList.setAll(imageDB);
+        ImageDAO dao = new ImageRepository();
+        List<ImageEntity> all = dao.getAllImages();
+        imageList.setAll(all);
     }
 
     private void setupListeners() {
-        setupSelectionListener();
-        setupAlgorithmSelectionListener();
-    }
-
-    private void setupSelectionListener() {
-        view.getImageTableView()
-                .getSelectionModel()
+        view.getImageTableView().getSelectionModel()
                 .selectedItemProperty()
-                .addListener((obs, oldSel, newSel) -> {
-                    if (newSel != null) {
-                        handleImageSelection(newSel);
-                    }
+                .addListener((o,oldVal,newVal) -> {
+                    if (newVal != null) handleImageSelection(newVal);
+                });
+
+        view.getAlgorithmComboBox().getSelectionModel()
+                .selectedItemProperty()
+                .addListener((o,oldVal,newVal) -> {
+                    if (newVal != null) handleAlgorithmSelection(newVal);
                 });
     }
 
-    private void setupAlgorithmSelectionListener() {
-        view.getAlgorithmComboBox()
-                .getSelectionModel()
-                .selectedItemProperty()
-                .addListener((obs, oldAlg, newAlg) -> {
-                    if (newAlg != null) {
-                        handleAlgorithmSelection(newAlg);
-                    }
-                });
-    }
-
-    private void handleImageSelection(ImageEntity selectedImage) {
-        loadOriginalImage(selectedImage);
-        originalImage = view.getOriginalImageView().getImage();
+    private void handleImageSelection(ImageEntity ent) {
+        loadOriginalImage(ent);
         initializeProcessorIfReady();
     }
 
-    private void handleAlgorithmSelection(String algorithm) {
-        if (imageProcessor == null || originalImage == null) {
-            System.err.println("ImageProcessor or original image not initialized.");
-            return;
-        }
-        processImageAsync(algorithm);
+    private void handleAlgorithmSelection(String alg) {
+        if (imageProcessor == null || originalImage == null) return;
+        processImageAsync(alg);
     }
 
     private void initializeProcessorIfReady() {
@@ -82,66 +65,44 @@ public class LoadImagesController {
         }
     }
 
-    private void processImageAsync(String algorithm) {
-        showProgressBar();
-
-        Runnable taskRunnable = createImageProcessingTask(algorithm);
-        ThreadTask threadTask = new ThreadTask(taskRunnable);
-
-        setupTaskHandler(threadTask);
-        threadTask.start();
-    }
-
-    private void showProgressBar() {
+    private void processImageAsync(String alg) {
+        ProgressBar bar = view.getProgressBar();
         Platform.runLater(() -> {
-            ProgressBar progressBar = view.getProgressBar();
-            progressBar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
-            progressBar.setVisible(true);
+            bar.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
+            bar.setVisible(true);
         });
-    }
 
-    private Runnable createImageProcessingTask(String algorithm) {
-        return () -> {
+        Runnable taskRun = () -> {
             try {
-                imageProcessor.setAlgorithm(algorithm);
-                Thread.sleep(3000);
-                imageProcessor.process();
-            } catch (InterruptedException e) {
-                System.out.println("Thread interrupted during sleep");
-                Thread.currentThread().interrupt();
+                Thread.sleep(4000);
             }
-        };
-    }
+            catch (InterruptedException ignored) {
 
-    private void setupTaskHandler(ThreadTask threadTask) {
-        threadTask.setOnFinished(() -> Platform.runLater(() -> {
+            }
+            imageProcessor.setAlgorithm(alg);
+            imageProcessor.process();
+        };
+
+        ThreadTask t = new ThreadTask(taskRun);
+        t.setOnFinished(() -> Platform.runLater(() -> {
             view.getProcessedImageView().setImage(imageProcessor.getResult());
-            ProgressBar progressBar = view.getProgressBar();
-            progressBar.setVisible(false);
-            progressBar.setProgress(0);
+            bar.setVisible(false); bar.setProgress(0);
         }));
+        t.start();
     }
 
     private void loadOriginalImage(ImageEntity image) {
-        String relativePath = image.getPath();
-        try (InputStream is = getClass().getResourceAsStream("/images/lena.png")) {
-            if (is == null) {
-                System.err.println("Resource not found: " + relativePath);
-                view.getOriginalImageView().setImage(null);
-                return;
-                //TODO why when i  put the relativaPath dont work?
-            }
-            Image img = new Image(is);
-            view.getOriginalImageView().setImage(img);
-            System.out.println("Image loaded successfully from: " + relativePath);
-        } catch (Exception e) {
-            System.err.println("Error loading image: " + e.getMessage());
-            view.getOriginalImageView().setImage(null);
-        }
-    }
+        Path p = Paths.get(image.getPath());
+        if (!p.isAbsolute()) p = Paths.get(System.getProperty("user.dir")).resolve(p);
 
-    private ArrayList<ImageEntity> fetchImagesFromDatabase() {
-        ImageDAO imageDAO = new ImageRepository();
-        return (ArrayList<ImageEntity>) imageDAO.getAllImages();
+        if (Files.exists(p)) {
+            Image img = new Image(p.toUri().toString());
+            originalImage = img;
+            Platform.runLater(() -> view.getOriginalImageView().setImage(img));
+        } else {
+            System.err.println("File not found: " + p);
+            originalImage = null;
+            Platform.runLater(() -> view.getOriginalImageView().setImage(null));
+        }
     }
 }
