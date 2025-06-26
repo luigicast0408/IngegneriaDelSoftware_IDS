@@ -1,5 +1,7 @@
 package com.example.gradient.database;
 
+import java.util.Objects;
+
 public class ImageEntity {
     private int id;
     private String name;
@@ -9,7 +11,7 @@ public class ImageEntity {
 
     public ImageEntity() {
         id = 0;
-        name = "";
+        this.name = "";
         path = "";
         description = "";
         id_user = 0;
@@ -53,5 +55,25 @@ public class ImageEntity {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    /**
+     * This method test if an object is equal to another
+     * @param object
+     * @return boolean value
+     */
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof ImageEntity image)) return false;
+        return id == image.id &&
+                id_user == image.id_user &&
+                Objects.equals(name, image.name) &&
+                Objects.equals(path, image.path) &&
+                Objects.equals(description, image.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, path, description, id_user);
     }
 }
