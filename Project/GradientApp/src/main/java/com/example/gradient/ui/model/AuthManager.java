@@ -15,7 +15,7 @@ public class AuthManager {
     private final UserDao userDao;
     private User currentUser;
 
-    private AuthManager() {
+    public AuthManager() {
         this.userDao = new UserRepository();
     }
     
@@ -39,7 +39,7 @@ public class AuthManager {
      * Register method to create a new user.
      * @return \u00a0true if registration is successful, false if the username is already in use.
      */
-    public boolean register(String name, String surname, String email, String username, String password, String role) {
+    public boolean register(String name, String surname, String email, String username, String password, int role) {
         if (userDao.getUserByUsername(username) != null) {
             return false;
         }
@@ -53,13 +53,13 @@ public class AuthManager {
     /**
      * Update method to modify user details.
      */
-    private void setUserParameters(User user, String name, String surname, String email, String username, String password, String role) {
+    private void setUserParameters(User user, String name, String surname, String email, String username, String password, int role) {
         user.setName(name);
         user.setSurname(surname);
         user.setEmail(email);
         user.setUsername(username);
         user.setPassword(hashPassword(password));
-        user.setRole("ADMIN".equalsIgnoreCase(role) ? 1 : 0); // 1 = ADMIN, 0 = USER
+        user.setRole(role);
     }
 
 

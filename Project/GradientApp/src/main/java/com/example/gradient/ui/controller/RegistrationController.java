@@ -14,7 +14,7 @@ import java.util.List;
 public class RegistrationController {
 
     private final RegisterView view;
-    private final AuthManager authManager = AuthManager.getInstance();
+    private final AuthManager authManager = new AuthManager();
 
     public RegistrationController(RegisterView view){
         this.view = view;
