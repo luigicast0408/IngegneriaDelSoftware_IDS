@@ -18,14 +18,7 @@ public class AuthManager {
     private AuthManager() {
         this.userDao = new UserRepository();
     }
-
-    public static synchronized AuthManager getInstance() {
-        if (instance == null) {
-            instance = new AuthManager();
-        }
-        return instance;
-    }
-
+    
     /**
      * Login method to authenticate a user.
      *
