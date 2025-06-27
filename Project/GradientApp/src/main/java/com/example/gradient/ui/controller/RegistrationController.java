@@ -55,7 +55,7 @@ public class RegistrationController {
             return;
         }
 
-        if (authManager.register(name, surname, email, username, password, "USER")) {
+        if (authManager.register(name, surname, email, username, password, 0)) {
             showAlert("Success", "The user is registered successfully.");
             List<User> allUsers = new UserRepository().getAllUsers();
             ObserverManager.USERS_SUBJECT.notifyObservers(allUsers);
