@@ -3,6 +3,7 @@ package com.example.gradient.observer;
 import com.example.gradient.database.ImageDAO;
 import com.example.gradient.database.ImageEntity;
 import com.example.gradient.database.ImageRepository;
+import com.example.gradient.util.JavaFXInitializer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ImageListObserverTest {
 
     @BeforeAll
-    static void setupEnvironment() throws Exception {
-        initJavaFXPlatform();
+    static void setupJavaFX(){
+        JavaFXInitializer.init();
     }
 
     @Test
