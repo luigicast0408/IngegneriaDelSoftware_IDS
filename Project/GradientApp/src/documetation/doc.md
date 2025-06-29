@@ -277,7 +277,7 @@ public class GradientFactory {
 --- 
 
 ### Observer Pattern
-![img_3.png](imagesDoc/img_3.png)
+![img_3.png](imagesDoc/image.png)
 
 
 #### ` Observer<T>` 
@@ -481,30 +481,7 @@ private void loadImagesFromDB() {
     new Thread(task).start();
 }
 ```
-## Session Use Example
 
-The `UserSession` class is a simple static utility used to manage the currently logged-in user across the application. It allows any part of the application to access or modify the active session state.
-### Class Definition
-```java
-import com.example.gradient.database.User;
-
-public class UserSession {
-    private static User currentUser;
-
-    public static void setCurrentUser(User user) {
-        currentUser = user;
-    }
-
-    public static User getCurrentUser() {
-        return currentUser;
-    }
-
-    public static void clear() {
-        currentUser = null;
-    }
-}
-
-```
 
 
 ## JavaFX Task Integration
@@ -570,8 +547,31 @@ private Runnable wrapTask(Runnable originalTask) {
 | `getThread()`      | Returns the internal thread instance                 |
 | `setPriority(int)` | Sets thread priority                                 |
 | `setName(String)`  | Sets thread name                                     |
+--- 
+## Session Use Example
 
+The `UserSession` class is a simple static utility used to manage the currently logged-in user across the application. It allows any part of the application to access or modify the active session state.
+### Class Definition
+```java
+import com.example.gradient.database.User;
 
+public class UserSession {
+    private static User currentUser;
+
+    public static void setCurrentUser(User user) {
+        currentUser = user;
+    }
+
+    public static User getCurrentUser() {
+        return currentUser;
+    }
+
+    public static void clear() {
+        currentUser = null;
+    }
+}
+
+```
 ## Example Use  of Application 
 ### 1. Sobel Algorithm
 <img src="imagesDoc/img_5.png" alt="Prewitt Result" width="400"/>
@@ -614,9 +614,10 @@ This project uses Java 17+ and JavaFX 21 to build a GUI-based image gradient app
 | `junit-jupiter`     | The JUnit 5 testing framework. Used for unit testing gradient algorithms or observer behaviors.             |
 
 ## Plugins
-| Plugin                  | Purpose                                                                                                                         |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `javafx-maven-plugin`   | Enables JavaFX applications to be compiled and run using Maven. It handles module-path configuration automatically.             |
+| Plugin                | Purpose                                                                                                                           |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `javafx-maven-plugin` | Enables JavaFX applications to be compiled and run using Maven. It handles module-path configuration automatically.               |
+| `jacoco-maven-plugin` | Adds code coverage tracking to tests. Generates reports showing which lines of code are covered or not after running  test suite. |
 
 
 ## How to Build and Run
@@ -624,7 +625,7 @@ This project uses Java 17+ and JavaFX 21 to build a GUI-based image gradient app
 ### Prerequisites
 - Java 17+ 
 - Maven 3.8+
-- MySQL server attivo
+- MySQL server active
 
 ### Run Locally
 
@@ -641,7 +642,17 @@ This section explains how to write, organize, and run unit tests for the Image G
 ```bash
 mvn clean test -e
 ```
-
+## How to use `JaCoco `plugin 
+1. Add the JaCoCo plugin to your pom.xml. This plugin automatically tracks which parts of the code are executed when tests run.
+2. Generate the coverage report by running:
+    ```bash
+      mvn clean verify
+    ```
+3. After test execution, the coverage report will be available at:
+    ```bash
+    target/site/jacoco/index.html
+    ```
+4. Open The HTML file in a browser to view details coverage statistic
 ##  Commit & Merge Standards
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/luigicast0408/IngegneriaDelSoftware_IDS)
@@ -655,13 +666,8 @@ mvn clean test -e
 
 [View GitHub Commit Activity](https://github.com/luigicast0408/IngegneriaDelSoftware_IDS/graphs/commit-activity)   
 [Contributors Graph](https://github.com/luigicast0408/IngegneriaDelSoftware_IDS/graphs/contributors)
-[![codecov](https://codecov.io/gh/luigicast0408/IngegneriaDelSoftware_IDS/branch/main/graph/badge.svg?token=5bd4db5c-2510-4617-899e-224234181fe9)](https://codecov.io/gh/luigicast0408/IngegneriaDelSoftware_IDS)
-
-
----
 
 ###  Commit Rules
-
 I follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) to keep the Git history clean and automatable.
 
 
