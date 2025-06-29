@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,8 +22,8 @@ public class UserRepositoryTest {
         ArrayList<User> users = userDao.getAllUsers();
 
         assertNotNull(users, "The list must not be null");
-        assertEquals(ArrayList.class, users.getClass(), "The list must be type of ArrayList");
-        assertFalse(users.isEmpty(), "The list of users must not be empty");
+        assertEquals(ArrayList.class, users.getClass(), "The list must be of type ArrayList");
+        assertFalse(users.isEmpty(), "The user list must not be empty");
 
         for (User user : users) {
             assertNotNull(user.getName(), "Name must not be null");
@@ -92,7 +91,15 @@ public class UserRepositoryTest {
         assertNull(deleted, "User should be deleted");
     }
 
-    // === Utility methods ===
+    @Test
+    public void loginWithValidCredentialsSucceeds() {
+        String email = generateTestEmail();
+        String username = "user_" + UUID.randomUUID();
+        String password = "securepass";
+
+        User user = new User(0, "Login", "User", email, username, password, 0);
+        userDao.createUser(user);
+    }
 
     private User createTestUser(String email) {
         User user = new User();
