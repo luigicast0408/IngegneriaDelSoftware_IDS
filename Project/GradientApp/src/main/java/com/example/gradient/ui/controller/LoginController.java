@@ -12,7 +12,7 @@ import javafx.scene.control.TextField;
 
 public class LoginController {
     private final LoginView view;
-    private  AuthManager authManager;
+    private final AuthManager authManager = new AuthManager();
 
     public LoginController(LoginView view) {
         this.view = view;
