@@ -23,7 +23,7 @@ public class AuthManagerTest {
 
     @Test
     void failedLoginWrongPassword() {
-        authManager.register("Luigi", "Bianchi", "luigi@mail.com", "luigi", "pass", 0);
+        authManager.register("Luigi", "Bianchi", "luigi@gmail.com", "luigi", "pass", 0);
         assertFalse(authManager.login("luigi", "wrongpass"));
     }
 
